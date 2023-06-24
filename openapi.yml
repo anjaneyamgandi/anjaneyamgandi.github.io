@@ -1,0 +1,379 @@
+openapi: 3.0.3
+info: 
+  title: easymade phonepe
+  version: 0.0.1
+  description: |
+        **similar `applications` in the market**
+        - ***bharatpe***
+        - ***phonepe*** 
+        - ***paytm***
+        ```
+        This apis developed completely in JAVA programming language
+        public void hello() {
+          System.out.println("EasyMade PhonePe is Awesome.");
+        }
+        ```
+  termsOfService: https://apache.com/terms
+  contact:
+    name: vijaya
+    email: krishna@kkk.com
+    url: https://apache.com
+tags: 
+  - name: Order
+    description: order related apis
+
+  - name: Product
+    description: product related apis
+
+  - name: Category
+    description: category related apis
+  
+servers:
+  - url: https://apache.com
+    description: Development
+  - url: https://google.com
+    description: Staging
+  - url: https://stackoverflow.com
+    description: Production
+  - url: https://{host}-easypay.com/{context}/{version}
+    description: Test
+    variables:
+      host:
+        default: sandbox
+        description: host name
+      context:
+        default: oig
+        description: application name
+      version:
+        default: v1
+        enum:
+        - v1
+        - v2
+
+paths: 
+  /orders:
+    get:
+      tags: 
+      - Order
+      parameters: 
+      - $ref: '#/components/parameters/orderIdQueryParam'
+      responses: 
+        '200':
+          description: successful order fetch
+          content: 
+            application/json:
+              example: 
+                - orderId: 1
+                  products:
+                  - productId: 1
+                    productName: samsung
+                    unitOfPrice: 1.0
+                    categoryName: mobile
+                    categoryId: 2
+                  addresses:
+                  - street: XXX
+                    city: YYY
+                    county: CCC
+                    state: SS
+                    country: UUU
+                    zipcode: 11111        
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer 
+                  products: 
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/product'
+                  addresses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/address'
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+
+
+    delete: 
+      tags: 
+      - Order
+      parameters: 
+      - $ref: '#/components/parameters/orderIdQueryParam'
+      responses: 
+        '204':
+          description: successful deletion of order
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+
+    put:
+      tags: 
+      - Order
+      requestBody: 
+        content: 
+          application/json:
+            example: 
+              - orderId: 1
+                products:
+                - productId: 1
+                  productName: samsung
+                  unitOfPrice: 1.0
+                  categoryName: mobile
+                  categoryId: 2
+                addresses:
+                - street: XXX
+                  city: YYY
+                  county: CCC
+                  state: SS
+                  country: UUU
+                  zipcode: 11111        
+            schema: 
+              type: object
+              properties:
+                orderId:
+                  type: integer 
+                products: 
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/product'
+                addresses:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/address'
+      responses: 
+        '200':
+          description: successful update
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+                      
+    post:
+      tags: 
+      - Order       
+      requestBody: 
+        content: 
+          application/json:
+            example: 
+              - orderId: 1
+                products:
+                - productId: 1
+                  productName: samsung
+                  unitOfPrice: 1.0
+                  categoryName: mobile
+                  categoryId: 2
+                addresses:
+                - street: XXX
+                  city: YYY
+                  county: CCC
+                  state: SS
+                  country: UUU
+                  zipcode: 11111        
+            schema: 
+              type: object
+              properties: 
+                products:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/product'
+                addresses:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/address'   
+      responses: 
+        '201':
+          description: successful order creation
+          content: 
+            application/json:
+              schema: 
+                type: integer
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+
+  /products/{productId}:
+    get:
+      tags: 
+      - Product
+      parameters: 
+      - name: productId
+        in: path
+        required: true
+        example: 11
+        schema: 
+          type: integer
+          minimum: 1
+          maximum: 1000
+      responses: 
+        '200':
+          description: success response
+          content: 
+            application/json:
+              example: 
+                productId: 1
+                productName: samsung
+                unitOfPrice: 1.0
+                categoryName: mobile
+                categoryId: 2
+              schema: 
+                $ref: '#/components/schemas/product'
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+
+  /products:
+    get:
+      tags: 
+      - Product      
+      parameters: 
+      - name: categoryId
+        in: query
+        required: false
+        example: 101
+        description: category id
+        schema: 
+          type: integer
+      responses: 
+        '200':
+          description: success response
+          content: 
+            application/json:
+              example: 
+              - productId: 1
+                productName: samsung
+                unitOfPrice: 1.0
+                categoryName: mobile
+                categoryId: 2
+
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/product'
+        '500':
+          $ref: '#/components/responses/500errorresponses'          
+      
+  /categories/{categoryId}:
+    get:
+      tags: 
+      - Category      
+      description: Get one category
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 100
+          maximum: 1000
+        example: 102
+      responses: 
+        '200': 
+          description: successful return          
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/category'                
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+
+
+  /categories:
+    get: 
+      tags: 
+      - Category      
+      description: get all categories
+      summary: get all available categories
+      parameters: 
+        - name: categoryId
+          description: unique category ID
+          in: query
+          required: false
+          schema: 
+            type: integer
+            minimum: 100
+            maximum: 200
+          example: 101
+      responses: 
+        '200':
+          description: successful operation
+          content: 
+            application/json:
+              example: 
+              - productId: 1
+                productName: samsung
+                unitOfPrice: 1.0
+                categoryName: mobile
+                categoryId: 2
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/category'
+        '500':
+          $ref: '#/components/responses/500errorresponses'
+
+components: 
+
+  responses: 
+    500errorresponses:
+      description: "error ocured"
+      content: 
+        application/json:
+          example:
+            errorCode: 500
+            message: Technical error occured
+          schema: 
+            type: object
+            properties:
+              errorCode:
+                type: integer
+              errorMessage:
+                type: string
+          
+
+  parameters: 
+    orderIdQueryParam:
+      name: orderId
+      in: query
+      required: true
+      schema:
+        type: integer                                    
+
+  schemas: 
+    product:
+      type: object
+      properties: 
+        productId:
+          type: integer
+        productName:
+          type: string
+        unitOfPrice:
+          type: number
+        categoryName:
+          type: string
+        categoryId:
+          type: integer
+    address:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        zipcode:
+          type: integer        
+    category:
+      type: object
+      properties:
+        name:
+          type: string
+          description: category name
+        categoryId:
+          type: integer
+          description: category id
+
+
+
+           
+          
+  
